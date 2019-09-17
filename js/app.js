@@ -28,11 +28,23 @@ class UI {
 
     deleteProduct(element) {
         if (element.name === 'borrar') {
-            console.log(element.parentElement);
+            element.parentElement.parentElement.parentElement.remove();
+            this.showMessage('Producto Eliminado', 'warning');
         }
     }
 
-    showMessage() {}
+    showMessage(message, cssClass) {
+        const div = document.createElement('div');
+        // div.className = 'alert alert-' + cssClass; forma antigua en JS
+        div.className = `alert alert-${cssClass} mt-2`;
+        div.appendChild(document.createTextNode(message));
+        const container = document.querySelector('.container');
+        document.querySelector('#app');
+        container.insertBefore(div, app);
+        setTimeout(function() {
+            document.querySelector('.alert').remove();
+        }, 3000);
+    }
 }
 //Eventos DOM(Document Objet Mode)
 document.getElementById('product-form').addEventListener('submit', function(e) {
@@ -44,8 +56,12 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
     // console.log(new Product(name, price, year));
     const product = new Product(name, price, year);
     const uI = new UI();
+    if (name === '' || price === '' || year === '') {
+        return uI.showMessage('Faltan datos en el Formulario', 'danger');
+    }
     uI.addProduct(product);
     uI.resetForm();
+    uI.showMessage('Producto Agregado', 'success');
 });
 document.getElementById('product-list').addEventListener('click', function(e) {
     // alert('Eliminando Producto');
